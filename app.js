@@ -8,6 +8,8 @@ const app = {
     document
       .querySelector(selectors.formSelector)
       .addEventListener('submit', this.addFlick.bind(this))
+    
+    console.log(localStorage.getItem('flickArr'))
   },
 
   makeStarBtn(name) {
@@ -98,7 +100,7 @@ const app = {
       btn.value = false
       thisFlick.fave = false
     }
-    console.log(thisFlick)
+    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
   },
 
   switchIndexes(flick1, flick2) {
@@ -136,6 +138,7 @@ const app = {
       const nextFlick = this.findFlickObj(nextItem.id)
       this.switchIndexes(nextFlick, thisFlick)
     }
+    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
   },
 
   deleteFlick(ev) {
@@ -144,6 +147,16 @@ const app = {
     const movieName = btn.id.substring(btn.id.indexOf(':') + 1)
     const li = document.getElementById(movieName)
     li.remove()
+    const thisFlick = this.findFlickObj(movieName)
+    let arrIndex = 0
+    for (arrIndex = 0; arrIndex < this.flicks.length; arrIndex++) {
+      const flickInArray = this.flicks[arrIndex]
+      if (flickInArray.name === movieName) {
+        break
+      }
+    }
+    this.flicks.splice(arrIndex, 1)
+    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
   },
 }
 
