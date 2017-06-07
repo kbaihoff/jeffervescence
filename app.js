@@ -1,10 +1,14 @@
 const app = {
   init(selectors) {
+    // this is the app object
     this.max = 0
     this.list = document.querySelector(selectors.listSelector)
+    this.flicks = []
+
+    // this is an event listener (before binding)
     document
       .querySelector(selectors.formSelector)
-      .addEventListener('submit', this.addFlick.bind(this)) // this is an event listener (before binding)
+      .addEventListener('submit', this.addFlick.bind(this))
   },
 
   addFlick(ev) {
@@ -16,6 +20,9 @@ const app = {
     }
     const li = this.renderListItem(flick)
     this.list.appendChild(li)
+
+    // TODO: Add flick to flicks[]
+
     this.max++
   },
 
