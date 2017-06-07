@@ -87,14 +87,18 @@ const app = {
     const btn = ev.target
     const movieName = btn.id.substring(btn.id.indexOf(':') + 1)
     const li = document.getElementById(movieName)
+    const thisFlick = this.findFlickObj(movieName)
     if (btn.value === 'false') {
       li.style.backgroundColor = 'yellow'
       btn.value = true
+      thisFlick.fave = true
     }
     else if (btn.value === 'true') {
       li.style.backgroundColor = '#F5F5DC'
       btn.value = false
+      thisFlick.fave = false
     }
+    console.log(thisFlick)
   },
 
   switchIndexes(flick1, flick2) {
