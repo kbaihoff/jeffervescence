@@ -14,15 +14,14 @@ const app = {
   addFlick(ev) {
     ev.preventDefault()
     const form = ev.target
+    // this is the app object
     const flick = {
       id: this.max + 1,
       name: form.flickName.value, // === the value from form > input with the name "flickName"
     }
     const li = this.renderListItem(flick)
     this.list.appendChild(li)
-
-    // TODO: Add flick to flicks[]
-
+    this.flicks.push(flick)
     this.max++
   },
 
