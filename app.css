@@ -1,0 +1,38 @@
+ul {
+  list-style-type: none;
+}
+
+li {
+  float: left;
+  width: 100%;
+}
+
+button {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+button.star {
+  background: -webkit-radial-gradient(circle, yellow, gold);
+  background: radial-gradient(circle, yellow, gold);
+  float: left;
+}
+
+button.up {
+  background: -webkit-linear-gradient(to top, #2E2EFE, #58D3F7);
+  background: linear-gradient(to top, #2E2EFE, #58D3F7);
+}
+
+button.down {
+  background: -webkit-linear-gradient(to top, #58D3F7, #2E2EFE);
+  background: linear-gradient(to top, #58D3F7, #2E2EFE);
+}
+
+button.x {
+  background: -webkit-radial-gradient(circle, #B40404, #FF0000);
+  background: radial-gradient(circle, #B40404, #FF0000);
+}
+
+.up, .down, .x {
+  float: right;
+}
