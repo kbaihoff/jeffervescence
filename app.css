@@ -3,7 +3,11 @@ ul {
 }
 
 li {
+  background-color: #F5F5DC;
+  border: 2px ridge gray;
   float: left;
+  margin-bottom: 10px;
+  padding: 1px;
   width: 100%;
 }
 
@@ -35,4 +39,5 @@ button.x {
 
 .up, .down, .x {
   float: right;
+  margin-left: 1px;
 }
