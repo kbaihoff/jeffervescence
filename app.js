@@ -10,15 +10,19 @@ const app = {
       .addEventListener('submit', this.addFlick.bind(this))
         
     this.flicksStr = localStorage.getItem('flickArr')
-    if (this.flicksStr != null && this.flicksStr.length > 0) {
-      let i = 0;
+    if (this.flicksStr != null && this.flicksStr.length > 2) { // Counts brackets
       while (this.flicksStr.indexOf('"id":') > 0) {
         const idIndex = this.flicksStr.indexOf('"id":') + 5
         const nameIndex = this.flicksStr.indexOf('"name":') + 8
         const faveIndex = this.flicksStr.indexOf('"fave":') + 7
-        const fId = this.flicksStr.substring(idIndex, this.flicksStr.indexOf(',', idIndex))
+        const fId1 = this.flicksStr.substring(idIndex, this.flicksStr.indexOf(',', idIndex))
         const fName = this.flicksStr.substring(nameIndex, this.flicksStr.indexOf(',', nameIndex) - 1)
-        const fFave = this.flicksStr.substring(faveIndex, this.flicksStr.indexOf('}', faveIndex))
+        const fFave1 = this.flicksStr.substring(faveIndex, this.flicksStr.indexOf('}', faveIndex))
+        let fId = parseInt(fId1)
+        let fFave = false
+        if (fFave1.indexOf('u') > 0) {
+          fFave = true
+        }
 
         const flick = {
           id: fId,
@@ -26,16 +30,30 @@ const app = {
           fave: fFave,
         }
         const li = this.renderListItem(flick)
-        if (flick.fave === 'true') {
+        if (flick.fave === true) {
           li.style.backgroundColor = 'yellow'
-          const starBtn = li.childNodes[1]
+          const starBtn = li.childNodes[1] // [text, star, x, down, up]
           starBtn.value = true
         }
         this.list.appendChild(li)
+        let prevItem = li.previousSibling
+        if (prevItem != null) {
+          let prevFlickObj = this.findFlickObj(prevItem.id)
+          while (prevFlickObj != null && prevFlickObj.id > flick.id) {
+            this.list.insertBefore(li, prevItem)
+            if (li.previousSibling === null) {
+              break
+            }
+            prevFlickObj = this.findFlickObj(li.previousSibling.id)
+            prevItem = li.previousSibling
+          }
+        }
         this.flicks.push(flick)
-
         this.flicksStr = this.flicksStr.substring(faveIndex)
       }
+      const children = this.list.childNodes
+      const lastNode = children[children.length - 1]
+      this.max = this.findFlickObj(lastNode.id).id
     }
   },
 
