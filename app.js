@@ -26,6 +26,11 @@ const app = {
           fave: fFave,
         }
         const li = this.renderListItem(flick)
+        if (flick.fave === 'true') {
+          li.style.backgroundColor = 'yellow'
+          const starBtn = li.childNodes[1]
+          starBtn.value = true
+        }
         this.list.appendChild(li)
         this.flicks.push(flick)
 
