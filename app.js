@@ -74,6 +74,7 @@ const app = {
     const flick = {
       id: this.max + 1,
       name: form.flickName.value, // === the value from form > input with the name "flickName"
+      fave: false
     }
     const li = this.renderListItem(flick)
     this.list.appendChild(li)
@@ -96,20 +97,40 @@ const app = {
     }
   },
 
+  switchIndexes(flick1, flick2) {
+    const temp = flick1.id
+    flick1.id = flick2.id
+    flick2.id = temp
+    return
+  },
+
+  findFlickObj(flickName) {
+    for (let i = 0; i < this.flicks.length; i++) {
+      const flickInArray = this.flicks[i]
+      if (flickInArray.name === flickName) {
+        return flickInArray
+      }
+    }
+  },
+
   moveFlick(ev) {
     ev.preventDefault()
     const btn = ev.target
     const upOrDown = btn.id.substring(0, btn.id.indexOf(':'))
-    const movieName = btn.id.substring(btn.id.indexOf(':') + 1)
     const thisItem = btn.parentElement
+    const thisName = btn.id.substring(btn.id.indexOf(':') + 1)
+    const thisFlick = this.findFlickObj(thisName)
     const nextItem = thisItem.nextSibling
     const prevItem = thisItem.previousSibling
     if (upOrDown === 'up' && prevItem != null) {
       this.list.insertBefore(thisItem, prevItem)
-      // parentNode.insertBefore(childToMove, childToPrecede)
+      const prevFlick = this.findFlickObj(prevItem.id)
+      this.switchIndexes(thisFlick, prevFlick)
     }
     else if (upOrDown === 'down' && nextItem != null) {
       this.list.insertBefore(nextItem, thisItem)
+      const nextFlick = this.findFlickObj(nextItem.id)
+      this.switchIndexes(nextFlick, thisFlick)
     }
   },
 
