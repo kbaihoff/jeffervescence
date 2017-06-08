@@ -89,11 +89,12 @@ const app = {
     const editBtn = document.createElement('button')
     const pencil = document.createTextNode('\u270e')
     span.className = 'flickTitle'
-    span.contentEditable = true
+    span.contentEditable = false
 
     editBtn.className = 'editPencil'
     editBtn.appendChild(pencil)
-    span.appendChild(editBtn)
+    editBtn.addEventListener('click', this.handleClick.bind(this))
+
     span.appendChild(text)
     span.addEventListener('keydown', this.handleEnter.bind(this))
 
@@ -104,6 +105,7 @@ const app = {
     const xBtn = this.makeXBtn(name)
     li.id = name
     li.appendChild(starBtn)
+    li.appendChild(editBtn)
     li.appendChild(span)
     li.appendChild(xBtn)
     li.appendChild(downBtn)
@@ -208,6 +210,10 @@ const app = {
     localStorage.setItem('flickArr', JSON.stringify(this.flicks))
   },
 
+  handleClick(ev) {
+    ev.target.parentElement.childNodes[2].contentEditable = true
+  },
+
   handleEnter(ev) {
     const span = ev.target
     if (ev.keyCode === 13) { // enter key === 13
@@ -218,9 +224,10 @@ const app = {
       const children = span.parentElement.childNodes // [star, span, x, down, up]
       span.parentElement.id = newName
       children[0].id = 'star:' + newName
-      children[2].id = 'x:' + newName
-      children[3].id = 'down:' + newName
-      children[4].id = 'up:' + newName
+      children[3].id = 'x:' + newName
+      children[4].id = 'down:' + newName
+      children[5].id = 'up:' + newName
+      span.contentEditable = false
       localStorage.setItem('flickArr', JSON.stringify(this.flicks))
     }
   },
