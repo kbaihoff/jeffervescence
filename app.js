@@ -10,48 +10,32 @@ const app = {
       .addEventListener('submit', this.addFlick.bind(this))
         
     this.flicksStr = localStorage.getItem('flickArr')
-    if (this.flicksStr != null && this.flicksStr.length > 2) { // Counts brackets
-      while (this.flicksStr.indexOf('"id":') > 0) {
-        const idIndex = this.flicksStr.indexOf('"id":') + 5
-        const nameIndex = this.flicksStr.indexOf('"name":') + 8
-        const faveIndex = this.flicksStr.indexOf('"fave":') + 7
-        const fId1 = this.flicksStr.substring(idIndex, this.flicksStr.indexOf(',', idIndex))
-        const fName = this.flicksStr.substring(nameIndex, this.flicksStr.indexOf(',', nameIndex) - 1)
-        const fFave1 = this.flicksStr.substring(faveIndex, this.flicksStr.indexOf('}', faveIndex))
-        let fId = parseInt(fId1)
-        let fFave = false
-        if (fFave1.indexOf('u') > 0) {
-          fFave = true
-        }
-
-        const flick = {
-          id: fId,
-          name: fName,
-          fave: fFave,
-        }
-        const li = this.renderListItem(flick)
-        if (flick.fave === true) {
-          li.style.backgroundColor = 'yellow'
-          const starBtn = li.childNodes[1] // [text, star, x, down, up]
-          starBtn.value = true
-        }
-        this.list.appendChild(li)
-        let prevItem = li.previousSibling
-        if (prevItem != null) {
-          let prevFlickObj = this.findFlickObj(prevItem.id)
-          while (prevFlickObj != null && prevFlickObj.id > flick.id) {
-            this.list.insertBefore(li, prevItem)
-            if (li.previousSibling === null) {
-              break
-            }
-            prevFlickObj = this.findFlickObj(li.previousSibling.id)
-            prevItem = li.previousSibling
-          }
-        }
-        this.flicks.push(flick)
-        this.flicksStr = this.flicksStr.substring(faveIndex)
+    this.reFlick = JSON.parse(this.flicksStr)
+    for (let i = 0; i < this.reFlick.length; i++) {
+      const flick = this.reFlick[i]
+      const li = this.renderListItem(flick)
+      if (flick.fave === true) {
+        li.style.backgroundColor = 'yellow'
+        const starBtn = li.childNodes[1] // [text, star, x, down, up]
+        starBtn.value = true
       }
-      const children = this.list.childNodes
+      this.list.appendChild(li)
+      let prevItem = li.previousSibling
+      if (prevItem != null) {
+        let prevFlickObj = this.findFlickObj(prevItem.id)
+        while (prevFlickObj != null && prevFlickObj.id > flick.id) {
+          this.list.insertBefore(li, prevItem)
+          if (li.previousSibling === null) {
+            break
+          }
+          prevFlickObj = this.findFlickObj(li.previousSibling.id)
+          prevItem = li.previousSibling
+        }
+      }
+      this.flicks.push(flick)
+    }
+    const children = this.list.childNodes
+    if (children.length > 0) {
       const lastNode = children[children.length - 1]
       this.max = this.findFlickObj(lastNode.id).id
     }
