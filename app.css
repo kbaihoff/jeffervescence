@@ -1,11 +1,22 @@
-ul {
+html, body {
+  background-color: #F6CEE3;
+}
+
+img {
+  margin-bottom: 8px;
+}
+
+#flickList {
   list-style-type: none;
+  margin: 0px;
+  padding: 0px;
 }
 
 li {
   background-color: #F5F5DC;
   border: 2px ridge gray;
   float: left;
+  font-size: 18pt;
   margin-bottom: 10px;
   padding: 1px;
   width: 100%;
@@ -14,6 +25,10 @@ li {
 button {
   border: 1px solid black;
   padding: 10px;
+}
+
+button.success {
+  border-style: ridge;
 }
 
 button.star {

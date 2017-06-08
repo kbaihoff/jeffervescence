@@ -118,6 +118,9 @@ const app = {
     ev.preventDefault()
     const form = ev.target
     // this is the app object
+    if (form.flickName.value.length === 0) {
+      return
+    }
     const flick = {
       id: this.max + 1,
       name: form.flickName.value, // === the value from form > input with the name "flickName"
