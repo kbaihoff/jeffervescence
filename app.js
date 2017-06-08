@@ -210,15 +210,35 @@ const app = {
     localStorage.setItem('flickArr', JSON.stringify(this.flicks))
   },
 
+  save(ev) {
+    console.log(this)
+    const span = ev.target
+    const newName = span.innerText
+    const thisFlick = this.findFlickObj(span.parentElement.id)
+    thisFlick.name = newName
+    const children = span.parentElement.childNodes // [star, span, x, down, up]
+    span.parentElement.id = newName
+    children[0].id = 'star:' + newName
+    children[3].id = 'x:' + newName
+    children[4].id = 'down:' + newName
+    children[5].id = 'up:' + newName
+    span.contentEditable = false
+    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
+  },
+
   handleClick(ev) {
-    ev.target.parentElement.childNodes[2].contentEditable = true
-    ev.target.parentElement.childNodes[2].focus()
+    const span =  ev.target.parentElement.childNodes[2]
+    span.contentEditable = true
+    span.focus()
+    span.addEventListener('blur', this.save.bind(this))
   },
 
   handleEnter(ev) {
     const span = ev.target
+    console.log(ev.keyCode)
     if (ev.keyCode === 13) { // enter key === 13
       ev.preventDefault()
+      // this.save()
       const newName = span.innerText
       const thisFlick = this.findFlickObj(span.parentElement.id)
       thisFlick.name = newName
