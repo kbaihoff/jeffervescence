@@ -212,6 +212,7 @@ const app = {
 
   handleClick(ev) {
     ev.target.parentElement.childNodes[2].contentEditable = true
+    ev.target.parentElement.childNodes[2].focus()
   },
 
   handleEnter(ev) {
