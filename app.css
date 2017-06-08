@@ -11,11 +11,13 @@ div.input-group > * {
 }
 
 .input-group-field {
-  width: 70%;
+  margin-right: 10px;
+  width: 68%;
 }
 
 .input-group-field2 {
-  width: 20%;
+  margin-right: 10px;
+  width: 19%;
 }
 
 #flickList {
@@ -39,6 +41,7 @@ button.editPencil {
   border-radius: 10px;
   background-color: lightgray;
   margin-right: 20px;
+  margin-left: 1px;
   /*display: hidden;*/
 }
 
