@@ -1,9 +1,21 @@
-html, body {
+body {
   background-color: #F6CEE3;
 }
 
 img {
   margin-bottom: 8px;
+}
+
+div.input-group > * {
+  float: left;
+}
+
+.input-group-field {
+  width: 70%;
+}
+
+.input-group-field2 {
+  width: 20%;
 }
 
 #flickList {
@@ -17,9 +29,26 @@ li {
   border: 2px ridge gray;
   float: left;
   font-size: 18pt;
+  height: fit-content;
   margin-bottom: 10px;
   padding: 1px;
   width: 100%;
+}
+
+button.editPencil {
+  border-radius: 10px;
+  background-color: lightgray;
+  margin-right: 7px;
+  /*display: hidden;*/
+}
+
+/*button.editPencil:hover {
+  display: block;
+}*/
+
+.flickTitle {
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 button {
@@ -27,8 +56,9 @@ button {
   padding: 10px;
 }
 
-button.success {
-  border-style: ridge;
+.button.success.button {
+  border: 1px ridge green;
+  width: auto;
 }
 
 button.star {

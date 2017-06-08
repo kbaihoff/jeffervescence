@@ -84,14 +84,27 @@ const app = {
 
   renderListItem(flick) {
     const name = flick.name
+    const span = document.createElement('span')
+    const text = document.createTextNode(name)
+    const editBtn = document.createElement('button')
+    const pencil = document.createTextNode('\u270e')
+    span.className = 'flickTitle'
+    span.contentEditable = true
+
+    editBtn.className = 'editPencil'
+    editBtn.appendChild(pencil)
+    span.appendChild(editBtn)
+    span.appendChild(text)
+    span.addEventListener('keydown', this.handleEnter.bind(this))
+
     const li = document.createElement('li')
     const starBtn = this.makeStarBtn(name)
     const upBtn = this.makeUpBtn(name)
     const downBtn = this.makeDownBtn(name)
     const xBtn = this.makeXBtn(name)
-    li.textContent = name
     li.id = name
     li.appendChild(starBtn)
+    li.appendChild(span)
     li.appendChild(xBtn)
     li.appendChild(downBtn)
     li.appendChild(upBtn)
@@ -101,11 +114,16 @@ const app = {
   addFlick(ev) {
     ev.preventDefault()
     const form = ev.target
+    if (isNaN(form.flickYear.value) === true) {
+      alert("Please enter the year as a number")
+      return
+    }
     // this is the app object
     const flick = {
       id: this.max + 1,
       name: form.flickName.value, // === the value from form > input with the name "flickName"
-      fave: false
+      fave: false,
+      year: parseInt(form.flickYear.value),
     }
     const li = this.renderListItem(flick)
     this.list.appendChild(li)
@@ -188,6 +206,23 @@ const app = {
     }
     this.flicks.splice(arrIndex, 1)
     localStorage.setItem('flickArr', JSON.stringify(this.flicks))
+  },
+
+  handleEnter(ev) {
+    const span = ev.target
+    if (ev.keyCode === 13) { // enter key === 13
+      ev.preventDefault()
+      const newName = span.innerText
+      const thisFlick = this.findFlickObj(span.parentElement.id)
+      thisFlick.name = newName
+      const children = span.parentElement.childNodes // [star, span, x, down, up]
+      span.parentElement.id = newName
+      children[0].id = 'star:' + newName
+      children[2].id = 'x:' + newName
+      children[3].id = 'down:' + newName
+      children[4].id = 'up:' + newName
+      localStorage.setItem('flickArr', JSON.stringify(this.flicks))
+    }
   },
 }
 
