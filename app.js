@@ -15,8 +15,8 @@ const app = {
       const flick = this.reFlick[i]
       const li = this.renderListItem(flick)
       if (flick.fave === true) {
-        li.style.backgroundColor = 'yellow'
-        const starBtn = li.childNodes[1] // [text, star, x, down, up]
+        li.style.backgroundColor = '#FFC300'
+        const starBtn = li.childNodes[0] // [star, edit, text span, x, down, up]
         starBtn.value = true
       }
       this.list.appendChild(li)
@@ -43,7 +43,7 @@ const app = {
 
   makeStarBtn(name) {
     const btn = document.createElement('button')
-    const star = document.createTextNode('\u2606')
+    const star = document.createTextNode('\u265a')
     btn.id = 'star:' + name
     btn.className = 'star'
     btn.value = false
@@ -74,7 +74,7 @@ const app = {
 
   makeXBtn(name) {
     const btn = document.createElement('button')
-    const x = document.createTextNode('\u2612')
+    const x = document.createTextNode('\u2718')
     btn.id = 'x:' + name
     btn.className = 'x'
     btn.addEventListener('click', this.deleteFlick.bind(this))
@@ -142,7 +142,7 @@ const app = {
     const li = document.getElementById(movieName)
     const thisFlick = this.findFlickObj(movieName)
     if (btn.value === 'false') {
-      li.style.backgroundColor = 'yellow'
+      li.style.backgroundColor = '#FFC300'
       btn.value = true
       thisFlick.fave = true
     }
@@ -214,7 +214,7 @@ const app = {
     const newName = span.innerText
     const thisFlick = this.findFlickObj(span.parentElement.id)
     thisFlick.name = newName
-    const children = span.parentElement.childNodes // [star, span, x, down, up]
+    const children = span.parentElement.childNodes // [star, edit, span, x, down, up]
     span.parentElement.id = newName
     children[0].id = 'star:' + newName
     children[3].id = 'x:' + newName
@@ -238,7 +238,6 @@ const app = {
 
   handleEnter(ev) {
     const span = ev.target
-    console.log(ev.keyCode)
     if (ev.keyCode === 13) { // enter key === 13
       ev.preventDefault()
       this.save(span)

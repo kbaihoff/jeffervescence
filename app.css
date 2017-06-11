@@ -16,9 +16,9 @@
 
 @keyframes fadeInAndOut2 {
   0% {
-    opacity: 0; /* 1 === completely solid, 0 === completely transparent*/
+    opacity: 0;
   }
-  45% { /* Otherwise transition would start at 0s*/
+  45% {
     opacity: 0;
   }
   55% {
@@ -95,6 +95,7 @@ li {
   margin-bottom: 10px;
   padding: 1px;
   width: 100%;
+  transition: background-color 0.3s ease-out;
 }
 
 button.editPencil {
