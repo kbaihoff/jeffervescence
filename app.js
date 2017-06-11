@@ -74,7 +74,7 @@ const app = {
 
   makeXBtn(name) {
     const btn = document.createElement('button')
-    const x = document.createTextNode('\u2718')
+    const x = document.createTextNode('🗑')
     btn.id = 'x:' + name
     btn.className = 'x'
     btn.addEventListener('click', this.deleteFlick.bind(this))
@@ -211,6 +211,7 @@ const app = {
   },
 
   save(span) {
+    span.style.backgroundColor = span.parentElement.style.backgroundColor
     const newName = span.innerText
     const thisFlick = this.findFlickObj(span.parentElement.id)
     thisFlick.name = newName
@@ -232,6 +233,7 @@ const app = {
   handleClick(ev) {
     const span =  ev.target.parentElement.childNodes[2]
     span.contentEditable = true
+    span.style.backgroundColor = 'white'
     span.focus()
     span.addEventListener('blur', this.getSpan.bind(this))
   },
