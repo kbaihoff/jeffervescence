@@ -143,11 +143,13 @@ const app = {
     const thisFlick = this.findFlickObj(movieName)
     if (btn.value === 'false') {
       li.style.backgroundColor = '#FFC300'
+      li.childNodes[2].style.backgroundColor = '#FFC300'
       btn.value = true
       thisFlick.fave = true
     }
     else if (btn.value === 'true') {
       li.style.backgroundColor = '#F5F5DC'
+      li.childNodes[2].style.backgroundColor = '#F5F5DC'
       btn.value = false
       thisFlick.fave = false
     }
