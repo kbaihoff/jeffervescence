@@ -1,148 +1,45 @@
-/* Defines a set of animation key frames */
-@keyframes fadeInAndOut1 {
-  0% {
-    opacity: 1; /* 1 === completely solid, 0 === completely transparent*/
-  }
-  45% { /* Otherwise transition would start at 0s*/
-    opacity: 1;
-  }
-  55% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
+.flick.template {
+  display: none;
 }
 
-@keyframes fadeInAndOut2 {
-  0% {
-    opacity: 0;
-  }
-  45% {
-    opacity: 0;
-  }
-  55% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
+.flick {
+  border: 1px solid #ddd;
+  clear: both;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  transition: 0.25s;
 }
 
-h5 {
-  animation-name: fadeInAndOut2;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-duration: 7s;
-  animation-direction: alternate;
-  font-family: Courier New, Courier, monospace;
-  padding-bottom: 10px;
-  text-align: right;
+.flick + .flick {
+  border-top: 0;
 }
 
-.jeffer {
-  animation-name: fadeInAndOut1;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-duration: 7s;
-  animation-direction: alternate;
+.flick-name {
+  flex-grow: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: calc(100% - 200px);
+  margin-right: 1rem;
 }
 
-body {
-  background: fixed;
-  background-image: url("JB1.jpg");
-  background-color:gray;
-  background-repeat: no-repeat;
-  background-size: 100%;
+.actions.button-group {
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
-.medium-8, .medium-offset-2, .column {
-  background-color: rgba(255, 255, 255, .5);
-  overflow-y: auto;
+.actions .button {
+  padding: .65rem 0.8em
 }
 
-.listings {
-  padding-bottom: 15px;
-  margin-bottom: 30px;
+.flick.fav {
+  background-color: #ffff55;
 }
 
-div.input-group > * {
-  float: left;
-}
-
-.input-group-field {
-  margin-right: 10px;
-  width: 68%;
-}
-
-.input-group-field2 {
-  margin-right: 10px;
-  width: 19%;
-}
-
-#flickList {
-  list-style-type: none;
-  margin: 0px;
-  padding: 0px;
-}
-
-li {
-  background-color: #F5F5DC;
-  border: 2px ridge gray;
-  float: left;
-  font-size: 14pt;
-  height: fit-content;
-  margin-bottom: 10px;
-  padding: 1px;
-  width: 100%;
-  transition: background-color 0.3s ease-out;
-}
-
-button.editPencil {
-  border: none;
-  margin-right: 0px;
-  margin-left: 20px;
-}
-
-.flickTitle {
-  padding: 5px;
-  margin-top: 15px;
-  margin-left: 0px;
-  transition: background-color 0.3s ease-out;
-}
-
-button {
-  border: 1px solid black;
-  padding: 10px;
-}
-
-.button.success.button {
-  border: 1px ridge green;
-  width: auto;
-}
-
-button.star {
-  background: -webkit-radial-gradient(circle, yellow, gold);
-  background: radial-gradient(circle, yellow, gold);
-  float: left;
-}
-
-button.up {
-  background: -webkit-linear-gradient(to top, #2E2EFE, #58D3F7);
-  background: linear-gradient(to top, #2E2EFE, #58D3F7);
-}
-
-button.down {
-  background: -webkit-linear-gradient(to top, #58D3F7, #2E2EFE);
-  background: linear-gradient(to top, #58D3F7, #2E2EFE);
-}
-
-button.x {
-  background: -webkit-radial-gradient(circle, #B40404, #FF0000);
-  background: radial-gradient(circle, #B40404, #FF0000);
-}
-
-.up, .down, .x {
-  float: right;
-  margin-left: 1px;
+.flick:first-child button.move-up,
+.flick:last-child button.move-down {
+  background-color: #ddd;
+  color: #eee;
+  cursor: not-allowed;
 }

@@ -1,255 +1,184 @@
-const app = { 
-  init(selectors) {
-    // this is the app object
+class App {
+  constructor(selectors) {
+    this.flicks = []
     this.max = 0
     this.list = document.querySelector(selectors.listSelector)
-    this.flicks = []
-    // this is an event listener (before binding)
+    this.template = document.querySelector(selectors.templateSelector)
     document
       .querySelector(selectors.formSelector)
-      .addEventListener('submit', this.addFlick.bind(this))
-        
-    this.flicksStr = localStorage.getItem('flickArr')
-    this.reFlick = JSON.parse(this.flicksStr)
-    for (let i = 0; i < this.reFlick.length; i++) {
-      const flick = this.reFlick[i]
-      const li = this.renderListItem(flick)
-      if (flick.fave === true) {
-        li.style.backgroundColor = '#FFC300'
-        const starBtn = li.childNodes[0] // [star, edit, text span, x, down, up]
-        starBtn.value = true
-      }
-      this.list.appendChild(li)
-      let prevItem = li.previousSibling
-      if (prevItem != null) {
-        let prevFlickObj = this.findFlickObj(prevItem.id)
-        while (prevFlickObj != null && prevFlickObj.id > flick.id) {
-          this.list.insertBefore(li, prevItem)
-          if (li.previousSibling === null) {
-            break
-          }
-          prevFlickObj = this.findFlickObj(li.previousSibling.id)
-          prevItem = li.previousSibling
-        }
-      }
-      this.flicks.push(flick)
+      .addEventListener('submit', this.addFlickViaForm.bind(this))
+    this.load()
+  }
+
+  load() {
+    // Get the JSON string out of localStorage
+    const flicksJSON = localStorage.getItem('flicks')
+    // Turn that into an array
+    const flicksArray = JSON.parse(flicksJSON)
+    // Set this.flicks to that array
+    if (flicksArray) {
+      flicksArray
+        .reverse()
+        .map(this.addFlick.bind(this))
     }
-    const children = this.list.childNodes
-    if (children.length > 0) {
-      const lastNode = children[children.length - 1]
-      this.max = this.findFlickObj(lastNode.id).id
+  }
+
+  addFlick(flick) {
+    const listItem = this.renderListItem(flick)
+    this.list.insertBefore(listItem, this.list.firstChild)
+    if (flick.id > this.max) {
+      this.max = flick.id + 1
     }
-  },
+    this.flicks.unshift(flick)
+    this.save()
+  }
 
-  makeStarBtn(name) {
-    const btn = document.createElement('button')
-    const star = document.createTextNode('\u265a')
-    btn.id = 'star:' + name
-    btn.className = 'star'
-    btn.value = false
-    btn.addEventListener('click', this.faveFlick.bind(this))
-    btn.appendChild(star)
-    return btn
-  },
-
-  makeUpBtn(name) {
-    const btn = document.createElement('button')
-    const up = document.createTextNode('\u25b2')
-    btn.id = 'up:' + name
-    btn.className = 'up'
-    btn.addEventListener('click', this.moveFlick.bind(this))
-    btn.appendChild(up)
-    return btn
-  },
-
-  makeDownBtn(name) {
-    const btn = document.createElement('button')
-    const down = document.createTextNode('\u25bc')
-    btn.id = 'down:' + name
-    btn.className = 'down'
-    btn.addEventListener('click', this.moveFlick.bind(this))
-    btn.appendChild(down)
-    return btn
-  },
-
-  makeXBtn(name) {
-    const btn = document.createElement('button')
-    const x = document.createTextNode('🗑')
-    btn.id = 'x:' + name
-    btn.className = 'x'
-    btn.addEventListener('click', this.deleteFlick.bind(this))
-    btn.appendChild(x)
-    return btn
-  },
-
-  renderListItem(flick) {
-    const name = flick.name
-    const span = document.createElement('span')
-    const text = document.createTextNode(name)
-    const editBtn = document.createElement('button')
-    const pencil = document.createTextNode('\u270e')
-    span.className = 'flickTitle'
-    span.contentEditable = false
-
-    editBtn.className = 'editPencil'
-    editBtn.appendChild(pencil)
-    editBtn.addEventListener('click', this.handleClick.bind(this))
-
-    span.appendChild(text)
-    span.addEventListener('keydown', this.handleEnter.bind(this))
-
-    const li = document.createElement('li')
-    const starBtn = this.makeStarBtn(name)
-    const upBtn = this.makeUpBtn(name)
-    const downBtn = this.makeDownBtn(name)
-    const xBtn = this.makeXBtn(name)
-    li.id = name
-    li.appendChild(starBtn)
-    li.appendChild(editBtn)
-    li.appendChild(span)
-    li.appendChild(xBtn)
-    li.appendChild(downBtn)
-    li.appendChild(upBtn)
-    return li
-  },
-
-  addFlick(ev) {
+  addFlickViaForm(ev) {
     ev.preventDefault()
-    const form = ev.target
-    if (isNaN(form.flickYear.value) === true) {
-      alert("Please enter the year as a number")
-      return
-    }
-    // this is the app object
+    const f = ev.target
     const flick = {
       id: this.max + 1,
-      name: form.flickName.value, // === the value from form > input with the name "flickName"
-      fave: false,
-      year: parseInt(form.flickYear.value),
+      name: f.flickName.value,
+      fav: false,
     }
-    const li = this.renderListItem(flick)
-    this.list.appendChild(li)
-    this.flicks.push(flick)
-    this.max++
-    form.reset()
-    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
-  },
+    this.addFlick(flick)
+    f.reset()
+  }
 
-  faveFlick(ev) {
-    ev.preventDefault()
-    const btn = ev.target
-    const movieName = btn.id.substring(btn.id.indexOf(':') + 1)
-    const li = document.getElementById(movieName)
-    const thisFlick = this.findFlickObj(movieName)
-    if (btn.value === 'false') {
-      li.style.backgroundColor = '#FFC300'
-      li.childNodes[2].style.backgroundColor = '#FFC300'
-      btn.value = true
-      thisFlick.fave = true
+  save() {
+    localStorage.setItem('flicks', JSON.stringify(this.flicks))
+  }
+
+  renderListItem(flick) {
+    const item = this.template.cloneNode(true)
+    item.classList.remove('template') // This applied visibility rule in CSS, and now it's not a template anymore; there's a real object
+    item.dataset.id = flick.id
+    item
+      .querySelector('.flick-name')
+      .textContent = flick.name
+    
+    item
+      .querySelector('.flick-name')
+      .setAttribute('title', flick.name)
+    
+    if (flick.fav) { // We need to decide to add that class when building the list item
+      item.classList.add('fav')
     }
-    else if (btn.value === 'true') {
-      li.style.backgroundColor = '#F5F5DC'
-      li.childNodes[2].style.backgroundColor = '#F5F5DC'
-      btn.value = false
-      thisFlick.fave = false
-    }
-    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
-  },
+    
+    // this calls removeFlick, so "this" is the event target in removeFlick (before binding)
+    item
+      .querySelector('button.remove')
+      .addEventListener('click', this.removeFlick.bind(this))
+    
+    // will pass the event and 'flick' as arguments to favFlick (Object, MouseEvent)
+    item
+      .querySelector('button.fav')
+      .addEventListener('click', this.favFlick.bind(this, flick))
+    
+    item
+      .querySelector('button.move-up')
+      .addEventListener('click', this.moveUp.bind(this, flick))
+    
+    item
+      .querySelector('button.move-down')
+      .addEventListener('click', this.moveDown.bind(this, flick))
 
-  switchIndexes(flick1, flick2) {
-    const temp = flick1.id
-    flick1.id = flick2.id
-    flick2.id = temp
-    return
-  },
+    item
+      .querySelector('button.edit')
+      .addEventListener('click', this.edit.bind(this, flick))
+    
+    item
+      .querySelector('.flick-name')
+      .addEventListener('keypress', this.saveOnEnter.bind(this, flick))
 
-  findFlickObj(flickName) {
+    return item
+  }
+
+  removeFlick(ev) {
+    const listItem = ev.target.closest('.flick')
+    // Find the flick in the array, and remove it
     for (let i = 0; i < this.flicks.length; i++) {
-      const flickInArray = this.flicks[i]
-      if (flickInArray.name === flickName) {
-        return flickInArray
-      }
-    }
-  },
-
-  moveFlick(ev) {
-    ev.preventDefault()
-    const btn = ev.target
-    const upOrDown = btn.id.substring(0, btn.id.indexOf(':'))
-    const thisItem = btn.parentElement
-    const thisName = btn.id.substring(btn.id.indexOf(':') + 1)
-    const thisFlick = this.findFlickObj(thisName)
-    const nextItem = thisItem.nextSibling
-    const prevItem = thisItem.previousSibling
-    if (upOrDown === 'up' && prevItem != null) {
-      this.list.insertBefore(thisItem, prevItem)
-      const prevFlick = this.findFlickObj(prevItem.id)
-      this.switchIndexes(thisFlick, prevFlick)
-    }
-    else if (upOrDown === 'down' && nextItem != null) {
-      this.list.insertBefore(nextItem, thisItem)
-      const nextFlick = this.findFlickObj(nextItem.id)
-      this.switchIndexes(nextFlick, thisFlick)
-    }
-    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
-  },
-
-  deleteFlick(ev) {
-    ev.preventDefault()
-    const btn = ev.target
-    const movieName = btn.id.substring(btn.id.indexOf(':') + 1)
-    const li = document.getElementById(movieName)
-    li.remove()
-    const thisFlick = this.findFlickObj(movieName)
-    let arrIndex = 0
-    for (arrIndex = 0; arrIndex < this.flicks.length; arrIndex++) {
-      const flickInArray = this.flicks[arrIndex]
-      if (flickInArray.name === movieName) {
+      const currentId = this.flicks[i].id.toString()
+      if (listItem.dataset.id === currentId) {
+        this.flicks.splice(i, 1)
         break
       }
     }
-    this.flicks.splice(arrIndex, 1)
-    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
-  },
+    listItem.remove()
+    this.save()
+  }
 
-  save(span) {
-    span.style.backgroundColor = span.parentElement.style.backgroundColor
-    const newName = span.innerText
-    const thisFlick = this.findFlickObj(span.parentElement.id)
-    thisFlick.name = newName
-    const children = span.parentElement.childNodes // [star, edit, span, x, down, up]
-    span.parentElement.id = newName
-    children[0].id = 'star:' + newName
-    children[3].id = 'x:' + newName
-    children[4].id = 'down:' + newName
-    children[5].id = 'up:' + newName
-    span.contentEditable = false
-    localStorage.setItem('flickArr', JSON.stringify(this.flicks))
-  },
+  favFlick(flick, ev) {
+    const listItem = ev.target.closest('.flick')
+    listItem.classList.toggle('fav')
+    flick.fav = !(flick.fav)
+    this.save()
+  }
 
-  getSpan(ev) {
-    const span = ev.target
-    this.save(span)
-  },
-
-  handleClick(ev) {
-    const span =  ev.target.parentElement.childNodes[2]
-    span.contentEditable = true
-    span.style.backgroundColor = 'white'
-    span.focus()
-    span.addEventListener('blur', this.getSpan.bind(this))
-  },
-
-  handleEnter(ev) {
-    const span = ev.target
-    if (ev.keyCode === 13) { // enter key === 13
-      ev.preventDefault()
-      this.save(span)
+  moveUp(flick, ev) {
+    const listItem = ev.target.closest('.flick')
+    const index = this.flicks.findIndex((currentFlick, i) => {
+      // Run this function until it returns true; returns -1 if not there; returns 0 if first thing
+      // Inner function itself will return a boolean
+      // findIndex will return an index when the inner function returns true
+      return currentFlick.id === flick.id
+    })
+    if (index > 0) {
+      this.list.insertBefore(listItem, listItem.previousElementSibling)
+      const previousFlick = this.flicks[index - 1]
+      this.flicks[index - 1] = flick
+      this.flicks[index] = previousFlick
+      this.save()
     }
-  },
+  }
+
+  moveDown(flick, ev) {
+    const listItem = ev.target.closest('.flick')
+    const index = this.flicks.findIndex((currentFlick, i) => {
+      return currentFlick.id === flick.id
+    })
+    if (index < this.flicks.length - 1) {
+      this.list.insertBefore(listItem.nextElementSibling, listItem)
+      const nextFlick = this.flicks[index + 1]
+      this.flicks[index + 1] = flick
+      this.flicks[index] =  nextFlick
+      this.save()
+    }
+  }
+
+  edit(flick, ev) {
+    const listItem = ev.target.closest('.flick')
+    const nameField = listItem.querySelector('.flick-name')
+    const btn = listItem.querySelector('.edit.button')
+    const icon = btn.querySelector('i.fa')
+    if (nameField.isContentEditable) {
+      // make it no longer editable, save changes
+      nameField.contentEditable = false
+      icon.classList.remove('fa-check')
+      icon.classList.add('fa-pencil')
+      btn.classList.remove('success')
+      flick.name = nameField.textContent
+      this.save()
+    }
+    else {
+      nameField.contentEditable = true
+      nameField.focus()
+      icon.classList.remove('fa-pencil')
+      icon.classList.add('fa-check')
+      btn.classList.add('success')
+    }
+  }
+
+  saveOnEnter(flick, ev) {
+    if (ev.key === "Enter") {
+      ev.preventDefault()
+      this.edit(flick, ev)
+    }
+  }
 }
 
-app.init({
-  formSelector: '#flickForm',
-  listSelector: '#flickList',
+const app = new App({
+  formSelector: '#flick-form',
+  listSelector: '#flick-list',
+  templateSelector: '.flick.template', // 2 classes
 })
